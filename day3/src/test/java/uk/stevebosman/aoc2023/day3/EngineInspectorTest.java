@@ -1,4 +1,4 @@
-package uk.stevebosman.aoc2023.day2;
+package uk.stevebosman.aoc2023.day3;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,5 +48,24 @@ class EngineInspectorTest {
 
     final EngineInspector instance = new EngineInspector(input);
     assertEquals(4361, instance.inspect());
+  }
+
+  @Test
+  void sumGearRatios() {
+    final String input = """
+            467..114..
+            ...*......
+            ..35..633.
+            ......#...
+            617*......
+            .....+.58.
+            ..592.....
+            ......755.
+            ...$.*....
+            .664.598..
+            """;
+
+    final EngineInspector instance = new EngineInspector(input);
+    assertEquals(467835, instance.sumGearRatios());
   }
 }
