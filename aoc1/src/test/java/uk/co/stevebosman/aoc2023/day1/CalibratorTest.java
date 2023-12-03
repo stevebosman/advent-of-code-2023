@@ -1,4 +1,4 @@
-package uk.co.stevebosman.aoc1;
+package uk.co.stevebosman.aoc2023.day1;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AoC1Test {
+class CalibratorTest {
   @ParameterizedTest
   @CsvSource(value = {
           "1abc2,12",
@@ -15,7 +15,7 @@ class AoC1Test {
           "treb7uchet,77"
   })
   void calibrateLine(final String line, final int expectedValue) {
-    final int actual = new AoC1().calibrateLine(line);
+    final int actual = new Calibrator().calibrateLine(line);
     assertEquals(expectedValue, actual);
   }
 
@@ -30,7 +30,7 @@ class AoC1Test {
           "7pqrstsixteen,7pqrst6ixteen",
   })
   void fixLine(final String line, final String expected) {
-    final String actual = new AoC1().fixLine(line);
+    final String actual = new Calibrator().fixLine(line);
     assertEquals(expected, actual);
   }
 
@@ -38,7 +38,7 @@ class AoC1Test {
   void calibrateShortDocument() {
     final String document = "1abc2";
 
-    final int actual = new AoC1().calibrateDocument(document.lines());
+    final int actual = new Calibrator().calibrateDocument(document.lines());
     assertEquals(12, actual);
   }
 
@@ -51,7 +51,7 @@ class AoC1Test {
             treb7uchet
             """;
 
-    final int actual = new AoC1().calibrateDocument(document.lines());
+    final int actual = new Calibrator().calibrateDocument(document.lines());
     assertEquals(142, actual);
   }
 
@@ -59,7 +59,7 @@ class AoC1Test {
   void calibrateShortFixedDocument() {
     final String document = "eightwothree";
 
-    final int actual = new AoC1().calibrateFixedDocument(document.lines());
+    final int actual = new Calibrator().calibrateFixedDocument(document.lines());
     assertEquals(83, actual);
   }
 
@@ -75,7 +75,7 @@ class AoC1Test {
             7pqrstsixteen
             """;
 
-    final int actual = new AoC1().calibrateFixedDocument(document.lines());
+    final int actual = new Calibrator().calibrateFixedDocument(document.lines());
     assertEquals(281, actual);
   }
 }

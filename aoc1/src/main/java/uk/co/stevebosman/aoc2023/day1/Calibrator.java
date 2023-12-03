@@ -1,9 +1,9 @@
-package uk.co.stevebosman.aoc1;
+package uk.co.stevebosman.aoc2023.day1;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AoC1 {
+public class Calibrator {
   private static final List<String> NUMBER_TEXT = List.of(
           "one", "two", "three", "four",
           "five", "six", "seven", "eight", "nine"
