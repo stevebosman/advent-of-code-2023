@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -79,6 +78,14 @@ public record Almanac(
 
       }
     });
+    seedToSoil.sort();
+    soilToFertilizer.sort();
+    fertilizerToWater.sort();
+    waterToLight.sort();
+    lightToTemperature.sort();
+    temperatureToHumidity.sort();
+    humidityToLocation.sort();
+
     return new Almanac(seeds, seedToSoil, soilToFertilizer, fertilizerToWater, waterToLight,
                        lightToTemperature, temperatureToHumidity, humidityToLocation);
   }

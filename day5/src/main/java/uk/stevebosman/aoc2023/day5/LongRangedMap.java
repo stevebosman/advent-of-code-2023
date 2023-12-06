@@ -1,24 +1,27 @@
 package uk.stevebosman.aoc2023.day5;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class LongRangedMap {
   final List<Range> ranges = new ArrayList<>();
 
-  public Long get(final Object key) {
-    Long result = null;
-    if (key instanceof Long) {
-      final long longKey = (Long) key;
-      result = longKey;
-      for (final Range range : ranges) {
-        if (range.fromStart() <= longKey && longKey <= range.fromEnd()) {
-          result = range.toStart() + (longKey - range.fromStart());
-          break;
-        }
+  public long get(final long key) {
+    long result = key;
+    for (final Range range : ranges) {
+      if (range.contains(key)) {
+        result = range.translate(key);
+        break;
       }
     }
     return result;
+  }
+
+  public void sort() {
+    Collections.sort(ranges);
   }
 
   public void putRange(final Range range) {
