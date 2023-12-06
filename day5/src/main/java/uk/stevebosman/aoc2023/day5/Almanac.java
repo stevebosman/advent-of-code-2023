@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 public record Almanac(
         Set<SeedRange> seeds,
-        Map<Long, Long> seedToSoil,
-        Map<Long, Long> soilToFertilizer,
-        Map<Long, Long> fertilizerToWater,
-        Map<Long, Long> waterToLight,
-        Map<Long, Long> lightToTemperature,
-        Map<Long, Long> temperatureToHumidity,
-        Map<Long, Long> humidityToLocation
+        LongRangedMap seedToSoil,
+        LongRangedMap soilToFertilizer,
+        LongRangedMap fertilizerToWater,
+        LongRangedMap waterToLight,
+        LongRangedMap lightToTemperature,
+        LongRangedMap temperatureToHumidity,
+        LongRangedMap humidityToLocation
 ) {
   public static Almanac of(final Stream<String> lines, final boolean rangedSeeds) {
     final Set<SeedRange> seeds = new HashSet<>();
