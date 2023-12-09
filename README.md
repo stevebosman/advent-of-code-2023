@@ -7,3 +7,4 @@
 * [Day5](day5/README.md)
 * [Day6](day6/README.md)
 * [Day7](day7/README.md)
+* [Day8](day8/README.md)
