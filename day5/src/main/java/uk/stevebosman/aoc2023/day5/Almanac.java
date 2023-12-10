@@ -93,7 +93,6 @@ public record Almanac(
   public long findMinimumLocation() {
     long minimum = Long.MAX_VALUE;
     for (final SeedRange seedRange : seeds) {
-      System.out.println(LocalDateTime.now() + ": " + seedRange);
       minimum = Math.min(minimum,
                          LongStream.range(seedRange.startInclusive(), seedRange.endExclusive())
                                    .parallel()
