@@ -1,19 +1,27 @@
 package uk.stevebosman.aoc2023.day10;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public class PipeMap {
   final List<String> lines;
+  final Coordinate start;
+  final List<Coordinate> firstSteps;
 
   public PipeMap(final String input) {
-    this.lines = input.lines()
-                      .toList();
+    this.lines = new ArrayList<>(input.lines()
+                      .toList());
+    this.start = getStartX();
+    this.firstSteps = getFirstSteps();
+    fixStart();
+    if (this.firstSteps.size() != 2) throw new IllegalArgumentException("Unusual first steps: " + firstSteps);
   }
 
-  public Coordinate getStart() {
+  private Coordinate getStartX() {
     for (int row = 0; row < lines.size(); row++) {
       final int column = lines.get(row)
                               .indexOf('S');
@@ -24,28 +32,53 @@ public class PipeMap {
     throw new IllegalArgumentException("no starting position");
   }
 
-  public List<Coordinate> getStarts() {
-    final Coordinate start = getStart();
+  public List<Coordinate> getFirstSteps() {
     final List<Coordinate> result = new ArrayList<>();
-    addIfConnected(result, start.north(), Set.of('|', '7', 'F'));
-    addIfConnected(result, start.south(), Set.of('|', 'L', 'J'));
-    addIfConnected(result, start.east(), Set.of('-', '7', 'J'));
-    addIfConnected(result, start.west(), Set.of('-', 'L', 'F'));
+    if (isConnected(start.north(), Set.of('|', '7', 'F'))) {
+      result.add(start.north());
+    }
+    if (isConnected(start.south(), Set.of('|', 'L', 'J'))) {
+      result.add(start.south());
+    }
+    if (isConnected(start.east(), Set.of('-', '7', 'J'))) {
+      result.add(start.east());
+    }
+    if (isConnected(start.west(), Set.of('-', 'L', 'F'))) {
+      result.add(start.west());
+    }
 
     return result;
   }
 
-  private void addIfConnected(final List<Coordinate> result, final Coordinate position, final Set<Character> connectable) {
-    final Optional<Character> easterly  = get(position);
-    if (easterly.isPresent()) {
-      if (connectable.contains(easterly.get())) {
-        result.add(position);
-      }
+  public void fixStart() {
+    final boolean north = isConnected(start.north(), Set.of('|', '7', 'F'));
+    final boolean south = isConnected(start.south(), Set.of('|', 'L', 'J'));
+    final boolean east = isConnected(start.east(), Set.of('-', '7', 'J'));
+    final boolean west = isConnected(start.west(), Set.of('-', 'L', 'F'));
+
+    Character startChar = null;
+    if (north && south) startChar = '|';
+    else if (north && east) startChar = 'L';
+    else if (north && west) startChar = 'J';
+    else if (south && east) startChar = 'F';
+    else if (south && west) startChar = '7';
+    else if (east && west) startChar = '-';
+
+    if (startChar != null) {
+      final String fixedLine = lines.get(start.row()).replace('S', startChar);
+      lines.set(start.row(), fixedLine);
     }
   }
 
+  private boolean isConnected(final Coordinate position, final Set<Character> connectable) {
+    final Optional<Character> charAtPosition = get(position);
+    return charAtPosition.filter(connectable::contains)
+                         .isPresent();
+  }
+
   public Optional<Character> get(final Coordinate coordinate) {
-    if (coordinate.row() < 0 || coordinate.row() >= lines.size() || coordinate.column() < 0 || coordinate.column() >= lines.get(0).length()) {
+    if (coordinate.row() < 0 || coordinate.row() >= lines.size()
+            || coordinate.column() < 0 || coordinate.column() >= lines.get(0).length()) {
       return Optional.empty();
     }
     return Optional.of(lines.get(coordinate.row())
@@ -58,32 +91,19 @@ public class PipeMap {
       throw new IllegalArgumentException("Impossible position reached");
     }
     final char pipe = optPipe.get();
-    System.out.println("position = " + position + ", pipe = " + pipe);
     Coordinate next = null;
     if (pipe == '-') {
-      next = choose(new Coordinate(position.row(), position.column() - 1),
-                    new Coordinate(position.row(), position.column() + 1),
-                    banned);
+      next = choose(position.west(), position.east(), banned);
     } else if (pipe == '|') {
-      next = choose(new Coordinate(position.row() - 1, position.column()),
-                    new Coordinate(position.row() + 1, position.column()),
-                    banned);
+      next = choose(position.north(), position.south(), banned);
     } else if (pipe == 'J') {
-      next = choose(new Coordinate(position.row() - 1, position.column()),
-                    new Coordinate(position.row(), position.column() - 1),
-                    banned);
+      next = choose(position.north(), position.west(), banned);
     } else if (pipe == 'L') {
-      next = choose(new Coordinate(position.row() - 1, position.column()),
-                    new Coordinate(position.row(), position.column() + 1),
-                    banned);
-    } else if (pipe == 'F') {
-      next = choose(new Coordinate(position.row() + 1, position.column()),
-                    new Coordinate(position.row(), position.column() + 1),
-                    banned);
+      next = choose(position.north(), position.east(), banned);
     } else if (pipe == '7') {
-      next = choose(new Coordinate(position.row(), position.column() - 1),
-                    new Coordinate(position.row() + 1, position.column()),
-                    banned);
+      next = choose(position.south(), position.west(), banned);
+    } else if (pipe == 'F') {
+      next = choose(position.south(), position.east(), banned);
     }
     return next;
   }
@@ -95,14 +115,13 @@ public class PipeMap {
   }
 
   public int count() {
-    Coordinate route1Previous = getStart();
-    Coordinate route2Previous = getStart();
-    final List<Coordinate> currents = getStarts();
+    Coordinate route1Previous = start;
+    Coordinate route2Previous = start;
+    final List<Coordinate> currents = firstSteps;
     Coordinate route1Current = currents.get(0);
     Coordinate route2Current = currents.get(1);
     int count = 1;
     while (!route1Current.equals(route2Current)) {
-      System.out.println(route1Current + " " + route2Current);
       count++;
       final Coordinate route1Next = nextPosition(route1Current, route1Previous);
 
@@ -113,6 +132,81 @@ public class PipeMap {
 
       route2Previous = route2Current;
       route2Current = route2Next;
+    }
+    return count;
+  }
+
+  /**
+   * All coordinates in loop (except horizontals).
+   * @return
+   */
+  public Set<Coordinate> loopCoordinates() {
+    final Set<Coordinate> coordinates = new HashSet<>();
+    Coordinate routePrevious = start;
+    Coordinate routeCurrent = firstSteps.get(0);
+    addIfPresent(coordinates, routeCurrent);
+    while (!routeCurrent.equals(start)) {
+      final Coordinate routeNext = nextPosition(routeCurrent, routePrevious);
+      routePrevious = routeCurrent;
+      routeCurrent = routeNext;
+
+      addIfPresent(coordinates, routeCurrent);
+    }
+    return Collections.unmodifiableSet(coordinates);
+  }
+
+  private void addIfPresent(final Set<Coordinate> coordinates, final Coordinate routeCurrent) {
+    final Optional<Character> currentCharacter = get(routeCurrent);
+    if (currentCharacter.isPresent()) {
+      coordinates.add(routeCurrent);
+    }
+  }
+
+  public boolean insideLoop(Coordinate coordinate, final Set<Coordinate> coordinates) {
+    if (coordinates.contains(coordinate)) return false;
+
+    int count = 0;
+    boolean partialUp = false;
+    boolean partialDown = false;
+    while(coordinate.column() > 0) {
+      coordinate = coordinate.west();
+      if (coordinates.contains(coordinate)) {
+        final Optional<Character> optionalCharacter = get(coordinate);
+        final char character = optionalCharacter.get();
+        if (character == '|') {
+          count ++;
+        } else if(character != '-') {
+          if (character == 'F' || character == '7') {
+            if (partialUp) {
+              partialUp = false;
+              count ++;
+            } else {
+              partialDown = !partialDown;
+            }
+          }
+          if (character == 'J' || character == 'L') {
+            if (partialDown) {
+              partialDown = false;
+              count ++;
+            } else {
+              partialUp = !partialUp;
+            }
+          }
+        }
+      }
+    }
+    return count % 2 == 1;
+  }
+
+  public int countInside() {
+    final Set<Coordinate> coordinates = loopCoordinates();
+    int count = 0;
+    for (int row = 0; row < lines.size(); row++) {
+      for (int column = 0; column < lines.size(); column++) {
+        if (insideLoop(new Coordinate(row, column), coordinates)) {
+          count++;
+        }
+      }
     }
     return count;
   }
