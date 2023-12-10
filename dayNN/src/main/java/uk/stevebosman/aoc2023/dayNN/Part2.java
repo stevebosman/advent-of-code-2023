@@ -3,13 +3,22 @@ package uk.stevebosman.aoc2023.dayNN;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.stream.Stream;
+import java.time.Duration;
+import java.time.Instant;
 
 public class Part2 {
   public static void main(final String[] args) throws IOException {
-    try (final Stream<String> lines = Files.lines(Path.of(args[0]))) {
-      System.out.println(LocalDateTime.now() + ": ");
+    final Instant start = Instant.now();
+    try {
+      runIt(Path.of(args[0]));
+    } finally {
+      final Instant end = Instant.now();
+      System.out.println(Duration.between(start, end));
     }
+  }
+
+  private static void runIt(final Path file) throws IOException {
+    final String input = Files.readString(file);
+    System.out.println("TODO: result goes here");
   }
 }
