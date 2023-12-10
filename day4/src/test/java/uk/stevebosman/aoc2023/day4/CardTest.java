@@ -1,8 +1,6 @@
 package uk.stevebosman.aoc2023.day4;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Set;
 

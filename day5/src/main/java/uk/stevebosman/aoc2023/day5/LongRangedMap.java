@@ -3,8 +3,6 @@ package uk.stevebosman.aoc2023.day5;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class LongRangedMap {
   final List<Range> ranges = new ArrayList<>();

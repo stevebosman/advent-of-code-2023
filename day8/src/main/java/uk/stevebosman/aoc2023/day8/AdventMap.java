@@ -2,7 +2,6 @@ package uk.stevebosman.aoc2023.day8;
 
 import org.apache.commons.math3.util.ArithmeticUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

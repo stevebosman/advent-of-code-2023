@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 public class Part2 {
   public static void main(final String[] args) throws IOException {

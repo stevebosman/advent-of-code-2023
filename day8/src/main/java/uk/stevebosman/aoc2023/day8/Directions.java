@@ -3,7 +3,7 @@ package uk.stevebosman.aoc2023.day8;
 import java.util.List;
 
 public class Directions {
-  private List<Direction> directions;
+  private final List<Direction> directions;
   private int current;
 
   public Directions(final String input) {

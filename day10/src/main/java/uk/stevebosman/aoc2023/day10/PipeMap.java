@@ -172,24 +172,26 @@ public class PipeMap {
       coordinate = coordinate.west();
       if (coordinates.contains(coordinate)) {
         final Optional<Character> optionalCharacter = get(coordinate);
-        final char character = optionalCharacter.get();
-        if (character == '|') {
-          count ++;
-        } else if(character != '-') {
-          if (character == 'F' || character == '7') {
-            if (partialUp) {
-              partialUp = false;
-              count ++;
-            } else {
-              partialDown = !partialDown;
+        if (optionalCharacter.isPresent()) {
+          final char character = optionalCharacter.get();
+          if (character == '|') {
+            count++;
+          } else if (character != '-') {
+            if (character == 'F' || character == '7') {
+              if (partialUp) {
+                partialUp = false;
+                count++;
+              } else {
+                partialDown = !partialDown;
+              }
             }
-          }
-          if (character == 'J' || character == 'L') {
-            if (partialDown) {
-              partialDown = false;
-              count ++;
-            } else {
-              partialUp = !partialUp;
+            if (character == 'J' || character == 'L') {
+              if (partialDown) {
+                partialDown = false;
+                count++;
+              } else {
+                partialUp = !partialUp;
+              }
             }
           }
         }

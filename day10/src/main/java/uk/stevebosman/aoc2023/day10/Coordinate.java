@@ -1,7 +1,5 @@
 package uk.stevebosman.aoc2023.day10;
 
-import java.util.Optional;
-
 public record Coordinate(int row, int column) {
   public Coordinate north() {
     return new Coordinate(row - 1, column);

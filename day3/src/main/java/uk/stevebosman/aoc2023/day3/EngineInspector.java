@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EngineInspector {
-  List<String> lines;
-  Map<Location, Character> symbolLocations;
+  final List<String> lines;
+  final Map<Location, Character> symbolLocations;
 
   public EngineInspector(final String document) {
     lines = document.lines()
