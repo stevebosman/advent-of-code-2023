@@ -1,4 +1,4 @@
-package uk.co.stevebosman.aoc2023.dayNN;
+package uk.co.stevebosman.aoc2023.day22;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.stevebosman.aoc.2023</groupId>
-    <artifactId>dayN</artifactId>
+    <artifactId>day16</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
