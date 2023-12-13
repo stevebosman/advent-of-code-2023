@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.stream.Stream;
 
 public class Part2 {
   public static void main(final String[] args) throws IOException {
@@ -18,6 +19,8 @@ public class Part2 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    System.out.println(new FillCounter().countAll2(Files.lines(file)));
+    try (final Stream<String> lines = Files.lines(file).parallel()) {
+      System.out.println(new FillCounter().countAll2(lines));
+    }
   }
 }

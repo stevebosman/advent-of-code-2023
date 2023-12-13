@@ -1,63 +1,85 @@
 package uk.co.stevebosman.aoc2023.day12;
 
-import java.time.LocalDateTime;
-import java.util.ArrayDeque;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FillCounter {
-  public long count(final String input, final List<Integer> counts) {
-    System.out.println("input = " + input);
+  final Map<String, Long> resultCache = new ConcurrentHashMap<>();
+  final Map<List<Integer>, Pattern> patternMap = new ConcurrentHashMap<>();
+  final Counter counter = new Counter();
 
+  private static boolean hasRoomForHashes(final String input, final int startingPosition, final int length) {
+    return input.substring(startingPosition, startingPosition + length)
+                .matches("[?#]{" + length + "}");
+  }
+
+  private static String buildNextActiveString(final String input, final int startingPosition, final int length) {
+    final StringBuilder sb = new StringBuilder(input);
+    final int endingPosition = startingPosition + length;
+    sb.replace(startingPosition, endingPosition, "#".repeat(length));
+    int nextQ = sb.indexOf("?");
+    while (nextQ < startingPosition && nextQ > -1) {
+      sb.replace(nextQ, nextQ + 1, ".");
+      nextQ = sb.indexOf("?");
+    }
+    if (nextQ == endingPosition) {
+      sb.replace(nextQ, nextQ + 1, ".");
+    }
+    return sb.toString();
+  }
+
+  private static Pattern patternForCounts(final List<Integer> counts) {
     final String seeking = "[.?]*" + counts.stream()
                                            .map(i -> "[#?]{" + i + "}")
                                            .collect(Collectors.joining("[.?]+")) + "[.?]*";
-    System.out.println("seeking = " + seeking);
+    return Pattern.compile(seeking);
+  }
 
-    final Pattern p = Pattern.compile(seeking);
+  public long count(String input, final List<Integer> counts) {
+    while (input.startsWith(".")) {
+      input = input.substring(1);
+    }
+    input = input.replaceAll("\\.+", ".");
 
-    Deque<String> active = new ArrayDeque<>();
-    active.add(input);
-    int count = 0;
-    int currentI = 0;
-    int hashCode = input.hashCode();
-    int iLength = input.length();
+    final Long cachedResult = resultCache.get(input + counts);
 
-    int i = 0;
-    while (!active.isEmpty()) {
-      i++;
-      final String s = active.removeFirst();
-      final String hashString = s.replaceFirst("\\?", "#");
-      if (p.matcher(hashString).matches()) {
-        if (hashString.contains("?")) {
-          active.add(hashString);
-        } else {
-          count++;
-        }
-      }
+    if (cachedResult != null) {
+      return cachedResult;
+    }
 
-      final String dotString = s.replaceFirst("\\?", ".");
-      if (p.matcher(dotString).matches()) {
-        if (dotString.contains("?")) {
-          active.add(dotString);
-        } else {
-          count++;
-        }
-      }
+    final Pattern p = patternMap.computeIfAbsent(counts, FillCounter::patternForCounts);
 
-      if (i % 10_000 == 0) {
-        if (s.indexOf("?") != currentI) {
-          currentI = s.indexOf("?");
-          System.out.println(
-                  LocalDateTime.now() + " - " + currentI + "/" + iLength + ": count = " + count + ", active = " + active.size() + " [" + hashCode + "]");
+    long count = 0;
+
+    final int currentCount = counts.get(0);
+
+    int nextHash = input.indexOf("#");
+    if (nextHash == -1) nextHash = input.length() + 1 - currentCount;
+
+    for (int startingPosition = 0; startingPosition < Math.min(nextHash + 1,
+                                                               input.length() + 1 - currentCount); startingPosition++) {
+      if (hasRoomForHashes(input, startingPosition, currentCount)) {
+        final String nextActive = buildNextActiveString(input, startingPosition, currentCount);
+        if (p.matcher(nextActive)
+             .matches()) {
+          if (nextActive.contains("?") && counts.size() > 1) {
+            count += count(nextActive.substring(startingPosition + currentCount), counts.subList(1, counts.size()));
+          } else {
+            count++;
+          }
         }
       }
     }
+
+    resultCache.put(input + counts, count);
 
     return count;
   }
@@ -76,29 +98,48 @@ public class FillCounter {
   }
 
   public long countAll2(final Stream<String> lines) {
-    List<String> strings = lines.toList();
-    long sum = 0;
-    for (int i = 0; i < strings.size(); i++) {
-      System.out.println(i + "/" + strings.size());
-      sum += count2(strings.get(i));
-    }
-    return sum;
-//    return lines.parallel().map(this::count2).reduce(Long::sum).orElse(0L);
+    return lines.map(this::count2)
+                .reduce(Long::sum)
+                .orElse(0L);
   }
 
   public long count2(final String raw) {
-    final String[] s = raw.split(" ");
-    List<Integer> counts = Arrays.stream(s[1].split(","))
-                                 .map(Integer::valueOf)
-                                 .toList();
-    List<Integer> longCounts = new ArrayList<>();
-    longCounts.addAll(counts);
-    longCounts.addAll(counts);
-    longCounts.addAll(counts);
-    longCounts.addAll(counts);
-    longCounts.addAll(counts);
+    final Instant start = Instant.now();
+    try {
+      System.out.println("Start: raw = " + raw);
+      final String[] s = raw.split(" ");
+      final List<Integer> counts = Arrays.stream(s[1].split(","))
+                                         .map(Integer::valueOf)
+                                         .toList();
 
-    return count(s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0], longCounts);
+      final String expandedInput = s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0];
+
+      final List<Integer> expandedCounts = new ArrayList<>();
+      expandedCounts.addAll(counts);
+      expandedCounts.addAll(counts);
+      expandedCounts.addAll(counts);
+      expandedCounts.addAll(counts);
+      expandedCounts.addAll(counts);
+
+      final long c = count(expandedInput, expandedCounts);
+      System.out.println("Finish(" + counter.increment() + "): raw = " + raw + " - " + c);
+      return c;
+    } finally {
+      final Instant end = Instant.now();
+      System.out.println(Duration.between(start, end));
+    }
   }
 
+}
+
+class Counter {
+  private final Object sync = new StringBuilder();
+  private int count = 0;
+
+  public int increment() {
+    synchronized (this.sync) {
+      this.count++;
+    }
+    return this.count;
+  }
 }
