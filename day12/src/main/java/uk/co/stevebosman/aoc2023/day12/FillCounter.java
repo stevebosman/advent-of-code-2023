@@ -1,14 +1,10 @@
 package uk.co.stevebosman.aoc2023.day12;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FillCounter {
@@ -37,7 +33,6 @@ public class FillCounter {
   }
 
   public long count(String input, final List<Integer> counts) {
-    System.out.print("; input = " + input + ", counts = " + counts);
     while (input.startsWith(".")) {
       input = input.substring(1);
     }
@@ -46,7 +41,6 @@ public class FillCounter {
     final Long cachedResult = resultCache.get(input + counts);
 
     if (cachedResult != null) {
-      System.out.print("; cachedResult = " + cachedResult + ": ");
       return cachedResult;
     }
 
@@ -60,16 +54,16 @@ public class FillCounter {
     final int maxP = Math.min(nextHash + 1,
                        input.length() + 1 - currentCount);
     for (int startingPosition = 0; startingPosition < maxP; startingPosition++) {
-      System.out.print("\n" + startingPosition);
       if (hasRoomForHashes(input, startingPosition, currentCount)) {
         final String nextActive = buildNextActiveString(input, startingPosition, currentCount);
           if (counts.size() > 1) {
-            count += count(nextActive.substring(startingPosition + currentCount), counts.subList(1, counts.size()));
-            System.out.println("total count = " + count);
-          } else if (counts.size() == 1) {
+            final long subCount = count(nextActive.substring(startingPosition + currentCount),
+                                counts.subList(1, counts.size()));
+            if (subCount>0) {
+              count += subCount;
+            }
+          } else if (counts.size() == 1 && !nextActive.substring(startingPosition+currentCount).contains("#")) {
             count++;
-            System.out.print("nextActive final = " + nextActive);
-            System.out.println("total count = " + count);
           }
       }
     }
@@ -80,8 +74,6 @@ public class FillCounter {
   }
 
   public long rawCount(final String raw) {
-    System.out.println("=".repeat(40));
-    System.out.println("raw = " + raw);
     final String[] s = raw.split(" ");
     return count(s[0], Arrays.stream(s[1].split(","))
                              .map(Integer::valueOf)
@@ -101,32 +93,23 @@ public class FillCounter {
   }
 
   public long count2(final String raw) {
-    final Instant start = Instant.now();
-    try {
-      System.out.println("=".repeat(80));
-      System.out.println("Start: raw = " + raw);
-      final String[] s = raw.split(" ");
-      final List<Integer> counts = Arrays.stream(s[1].split(","))
-                                         .map(Integer::valueOf)
-                                         .toList();
+    final String[] s = raw.split(" ");
+    final List<Integer> counts = Arrays.stream(s[1].split(","))
+                                       .map(Integer::valueOf)
+                                       .toList();
 
-      final String expandedInput = s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0];
+    final String expandedInput = s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0] + "?" + s[0];
 
-      final List<Integer> expandedCounts = new ArrayList<>();
-      expandedCounts.addAll(counts);
-      expandedCounts.addAll(counts);
-      expandedCounts.addAll(counts);
-      expandedCounts.addAll(counts);
-      expandedCounts.addAll(counts);
+    final List<Integer> expandedCounts = new ArrayList<>();
+    expandedCounts.addAll(counts);
+    expandedCounts.addAll(counts);
+    expandedCounts.addAll(counts);
+    expandedCounts.addAll(counts);
+    expandedCounts.addAll(counts);
 
-      final long c = count(expandedInput, expandedCounts);
-      System.out.println("\nraw = " + raw);
-      System.out.println("Finish(" + counter.increment() + "): raw = " + raw + " - " + c);
-      return c;
-    } finally {
-      final Instant end = Instant.now();
-      System.out.println(Duration.between(start, end));
-    }
+    final long c = count(expandedInput, expandedCounts);
+    System.out.println("Finish(" + counter.increment() + "): raw = " + raw + " - " + c);
+    return c;
   }
 
 }
