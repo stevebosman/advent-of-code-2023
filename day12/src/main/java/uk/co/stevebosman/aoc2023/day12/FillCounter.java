@@ -13,12 +13,12 @@ import java.util.stream.Stream;
 
 public class FillCounter {
   final Map<String, Long> resultCache = new ConcurrentHashMap<>();
-  final Map<List<Integer>, Pattern> patternMap = new ConcurrentHashMap<>();
   final Counter counter = new Counter();
 
   private static boolean hasRoomForHashes(final String input, final int startingPosition, final int length) {
-    return input.substring(startingPosition, startingPosition + length)
-                .matches("[?#]{" + length + "}");
+    final String match = "[?#]{" + length + "}[.?].*|[?#]{" + length + "}$";
+    final String substring = input.substring(startingPosition);
+    return substring.matches(match);
   }
 
   private static String buildNextActiveString(final String input, final int startingPosition, final int length) {
@@ -36,14 +36,8 @@ public class FillCounter {
     return sb.toString();
   }
 
-  private static Pattern patternForCounts(final List<Integer> counts) {
-    final String seeking = "[.?]*" + counts.stream()
-                                           .map(i -> "[#?]{" + i + "}")
-                                           .collect(Collectors.joining("[.?]+")) + "[.?]*";
-    return Pattern.compile(seeking);
-  }
-
   public long count(String input, final List<Integer> counts) {
+    System.out.print("; input = " + input + ", counts = " + counts);
     while (input.startsWith(".")) {
       input = input.substring(1);
     }
@@ -52,10 +46,9 @@ public class FillCounter {
     final Long cachedResult = resultCache.get(input + counts);
 
     if (cachedResult != null) {
+      System.out.print("; cachedResult = " + cachedResult + ": ");
       return cachedResult;
     }
-
-    final Pattern p = patternMap.computeIfAbsent(counts, FillCounter::patternForCounts);
 
     long count = 0;
 
@@ -64,18 +57,20 @@ public class FillCounter {
     int nextHash = input.indexOf("#");
     if (nextHash == -1) nextHash = input.length() + 1 - currentCount;
 
-    for (int startingPosition = 0; startingPosition < Math.min(nextHash + 1,
-                                                               input.length() + 1 - currentCount); startingPosition++) {
+    final int maxP = Math.min(nextHash + 1,
+                       input.length() + 1 - currentCount);
+    for (int startingPosition = 0; startingPosition < maxP; startingPosition++) {
+      System.out.print("\n" + startingPosition);
       if (hasRoomForHashes(input, startingPosition, currentCount)) {
         final String nextActive = buildNextActiveString(input, startingPosition, currentCount);
-        if (p.matcher(nextActive)
-             .matches()) {
-          if (nextActive.contains("?") && counts.size() > 1) {
+          if (counts.size() > 1) {
             count += count(nextActive.substring(startingPosition + currentCount), counts.subList(1, counts.size()));
-          } else {
+            System.out.println("total count = " + count);
+          } else if (counts.size() == 1) {
             count++;
+            System.out.print("nextActive final = " + nextActive);
+            System.out.println("total count = " + count);
           }
-        }
       }
     }
 
@@ -85,6 +80,8 @@ public class FillCounter {
   }
 
   public long rawCount(final String raw) {
+    System.out.println("=".repeat(40));
+    System.out.println("raw = " + raw);
     final String[] s = raw.split(" ");
     return count(s[0], Arrays.stream(s[1].split(","))
                              .map(Integer::valueOf)
@@ -106,6 +103,7 @@ public class FillCounter {
   public long count2(final String raw) {
     final Instant start = Instant.now();
     try {
+      System.out.println("=".repeat(80));
       System.out.println("Start: raw = " + raw);
       final String[] s = raw.split(" ");
       final List<Integer> counts = Arrays.stream(s[1].split(","))
@@ -122,6 +120,7 @@ public class FillCounter {
       expandedCounts.addAll(counts);
 
       final long c = count(expandedInput, expandedCounts);
+      System.out.println("\nraw = " + raw);
       System.out.println("Finish(" + counter.increment() + "): raw = " + raw + " - " + c);
       return c;
     } finally {

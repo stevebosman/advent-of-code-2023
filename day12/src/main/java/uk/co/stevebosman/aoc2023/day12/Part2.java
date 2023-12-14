@@ -19,7 +19,7 @@ public class Part2 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    try (final Stream<String> lines = Files.lines(file).parallel()) {
+    try (final Stream<String> lines = Files.lines(file)) {
       System.out.println(new FillCounter().countAll2(lines));
     }
   }
