@@ -19,6 +19,6 @@ public class Part1 {
 
   private static void runIt(final Path file) throws IOException {
     final String input = Files.readString(file);
-    System.out.println("TODO: result goes here");
+    System.out.println(new ParabolicDishMap(input).tiltNorthWeight());
   }
 }
