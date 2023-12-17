@@ -20,6 +20,6 @@ public class Part1 {
   private static void runIt(final Path file) throws IOException {
     final String input = Files.readString(file);
     final MirrorGrid grid = new MirrorGrid(input.lines().toList());
-    System.out.println(MirrorGrid.iterateAll(grid).getEnergy());
+    System.out.println(MirrorGrid.iterateAll(grid).getCurrentEnergy());
   }
 }

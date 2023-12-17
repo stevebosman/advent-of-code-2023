@@ -148,6 +148,26 @@ public class MirrorGridTest {
                          ########..
                          .#######..
                          .#...#.#..""", instance.toEnergyString());
-    assertEquals(46, instance.getEnergy());
+    assertEquals(46, instance.getCurrentEnergy());
+  }
+
+  @Test
+  void getMaxEnergy() {
+    // Given
+    final var input = """
+            .|...\\....
+            |.-.\\.....
+            .....|-...
+            ........|.
+            ..........
+            .........\\
+            ..../.\\\\..
+            .-.-/..|..
+            .|....-|.\\
+            ..//.|....""";
+    // When
+    final long actual = MirrorGrid.getMaxEnergy(input);
+    // Then
+    assertEquals(51, actual);
   }
 }
