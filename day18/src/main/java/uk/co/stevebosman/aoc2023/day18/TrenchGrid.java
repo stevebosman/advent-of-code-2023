@@ -20,7 +20,7 @@ public class TrenchGrid {
     int maxX = Integer.MIN_VALUE;
     int minY = Integer.MAX_VALUE;
     int maxY = Integer.MIN_VALUE;
-    for (Position p: trench) {
+    for (final Position p: trench) {
       minX = Math.min(minX, p.x());
       minY = Math.min(minY, p.y());
       maxX = Math.max(maxX, p.x());
@@ -37,7 +37,7 @@ public class TrenchGrid {
     final var holes = new ArrayList<Position>();
     var position = new Position(0,0);
     holes.add(position);
-    for (String line: lines) {
+    for (final String line: lines) {
       final var move = Move.of(line);
       for (int i = 0; i < move.length(); i++) {
         position = position.move(move.direction());
@@ -52,7 +52,7 @@ public class TrenchGrid {
     return stringify(trench);
   }
 
-  private String stringify(Collection<Position> positions) {
+  private String stringify(final Collection<Position> positions) {
     final StringBuilder sb = new StringBuilder();
     for (int y = minY; y < maxY+1; y++) {
       for (int x = minX; x <maxX+1; x++) {
@@ -95,9 +95,9 @@ public class TrenchGrid {
   }
 
   private void checkIfOutside(
-          Set<Position> outside,
-          Set<Position> checked,
-          Position start
+          final Set<Position> outside,
+          final Set<Position> checked,
+          final Position start
   ) {
     if (trench.contains(start) || checked.contains(start)) return;
 
@@ -109,7 +109,7 @@ public class TrenchGrid {
       checked.add(position);
       if (!trench.contains(position) && !outside.contains(position)) {
         outside.add(position);
-        for (Direction d: Direction.values()) {
+        for (final Direction d: Direction.values()) {
           final var nextPosition = position.move(d);
           if (!checked.contains(nextPosition)
                   && hasCell(nextPosition)) {
@@ -120,7 +120,7 @@ public class TrenchGrid {
     }
   }
 
-  private boolean hasCell(Position nextPosition) {
+  private boolean hasCell(final Position nextPosition) {
     return nextPosition.x() >= minX && nextPosition.x() <= maxX
             && nextPosition.y() >= minY && nextPosition.y() <= maxY;
   }
