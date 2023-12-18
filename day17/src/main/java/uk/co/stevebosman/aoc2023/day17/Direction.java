@@ -1,21 +1,21 @@
 package uk.co.stevebosman.aoc2023.day17;
 
 enum Direction {
-  South(0, 1), North(0, -1), East(-1, 0), West(1, 0);
-  private final int dy;
+  North(0, -1), South(0, 1), East(1, 0), West(-1, 0);
   private final int dx;
+  private final int dy;
 
   Direction(final int dx, final int dy) {
-    this.dy = dy;
     this.dx = dx;
-  }
-
-  public int getDy() {
-    return dy;
+    this.dy = dy;
   }
 
   public int getDx() {
     return dx;
+  }
+
+  public int getDy() {
+    return dy;
   }
 
   public Direction opposite() {

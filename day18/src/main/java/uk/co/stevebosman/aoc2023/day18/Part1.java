@@ -18,7 +18,9 @@ public class Part1 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    final String input = Files.readString(file);
-    System.out.println("TODO: result goes here");
+    final var input = Files.readAllLines(file);
+    final TrenchGrid grid = TrenchGrid.of(input);
+//    System.out.println(grid);
+    System.out.println(grid.countHole());
   }
 }
