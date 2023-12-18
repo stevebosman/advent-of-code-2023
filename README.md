@@ -16,7 +16,7 @@
 * [Day14: Parabolic Reflector Dish](day14/README.md)
 * [Day15: Lens Library](day15/README.md)
 * [Day16: The Floor Will Be Lava](day16/README.md)
-* [Day17](day17/README.md)
+* [Day17: Clumsy Crucible](day17/README.md)
 * [Day18](day18/README.md)
 * [Day19](day19/README.md)
 * [Day20](day20/README.md)

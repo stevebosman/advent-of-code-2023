@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 public class Part2 {
   public static void main(final String[] args) throws IOException {
@@ -18,7 +19,7 @@ public class Part2 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    final String input = Files.readString(file);
-    System.out.println("TODO: result goes here");
+    final List<String> input = Files.readAllLines(file);
+    System.out.println(HeatLossGrid.minimumHeatLoss(input, 4, 10));
   }
 }
