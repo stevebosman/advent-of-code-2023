@@ -9,11 +9,11 @@ import java.util.List;
 
 public class Part2 {
   public static void main(final String[] args) throws IOException {
-    final Instant start = Instant.now();
+    final var start = Instant.now();
     try {
       runIt(Path.of(args[0]));
     } finally {
-      final Instant end = Instant.now();
+      final var end = Instant.now();
       System.out.println(Duration.between(start, end));
     }
   }

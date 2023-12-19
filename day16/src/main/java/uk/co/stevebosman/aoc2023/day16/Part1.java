@@ -8,17 +8,17 @@ import java.time.Instant;
 
 public class Part1 {
   public static void main(final String[] args) throws IOException {
-    final Instant start = Instant.now();
+    final var start = Instant.now();
     try {
       runIt(Path.of(args[0]));
     } finally {
-      final Instant end = Instant.now();
+      final var end = Instant.now();
       System.out.println(Duration.between(start, end));
     }
   }
 
   private static void runIt(final Path file) throws IOException {
-    final String input = Files.readString(file);
+    final var input = Files.readString(file);
     final MirrorGrid grid = new MirrorGrid(input.lines().toList());
     System.out.println(MirrorGrid.iterateAll(grid).getCurrentEnergy());
   }
