@@ -1,8 +1,6 @@
 package uk.co.stevebosman.aoc2023.day19;
 
-import uk.co.stevebosman.aoc2023.day19.Part;
-
 @FunctionalInterface
-public interface Condition {
+public interface Part1Condition {
   boolean evaluate(Part part) ;
 }

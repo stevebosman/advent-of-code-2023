@@ -12,9 +12,10 @@ public class RuleFactory {
       final String conditionType = matcher.group(2);
       final int quantity = Integer.parseInt(matcher.group(3));
       final String destination = matcher.group(4);
-      final Condition condition = ConditionFactory.newCondition(category, conditionType, quantity);
+      final Part1Condition part1Condition = Part1ConditionFactory.newPart1Condition(category, conditionType, quantity);
+      final Part2Condition part2Condition = Part2Condition.of(category, conditionType, quantity);
 
-      return new Rule(condition, destination);
+      return new Rule(part1Condition, part2Condition, destination);
     }
     throw new IllegalArgumentException("Unrecognised rule: " + input);
   }

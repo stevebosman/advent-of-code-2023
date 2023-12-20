@@ -26,7 +26,7 @@ public record Workflow(String name, List<Rule> rules, String defaultDestination)
   public String process(final Part part) {
     String destination = defaultDestination;
     for (final Rule rule: rules) {
-      if (rule.condition().evaluate(part)) {
+      if (rule.part1Condition().evaluate(part)) {
         destination = rule.destination();
         break;
       }
