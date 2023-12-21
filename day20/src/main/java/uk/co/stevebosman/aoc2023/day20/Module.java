@@ -24,7 +24,7 @@ public abstract class Module {
     counts.put(pulse, counts.getOrDefault(pulse, 0L) + outputs.size());
     final Module sender = this;
     for (final Module module : outputs) {
-      System.out.println(sender + " " + pulse + "->" + module);
+//      System.out.println(sender + " " + pulse + "->" + module);
       module.receivePulse(sender, pulse);
     }
   }
@@ -32,4 +32,6 @@ public abstract class Module {
   public void registerOutput(final Module module) {
     this.outputs.add(module);
   }
+
+  public static long index;
 }

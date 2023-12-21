@@ -18,7 +18,8 @@ public class Part2 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    final var input = Files.readString(file);
-    System.out.println("TODO: result goes here");
+    final var input = Files.readAllLines(file);
+    // use to determine repeats
+    System.out.println(new Button(input).repeat(10000));
   }
 }
