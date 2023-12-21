@@ -20,7 +20,7 @@
 * [Day18: Lavaduct Lagoon](day18/README.md)
 * [Day19: Aplenty](day19/README.md)
 * [Day20: Pulse Propagation](day20/README.md)
-* [Day21](day21/README.md)
+* [Day21: Step Counter](day21/README.md)
 * [Day22](day22/README.md)
 * [Day23](day23/README.md)
 * [Day24](day24/README.md)

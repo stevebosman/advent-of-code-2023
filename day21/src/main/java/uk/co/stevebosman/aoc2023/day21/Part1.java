@@ -18,7 +18,7 @@ public class Part1 {
   }
 
   private static void runIt(final Path file) throws IOException {
-    final var input = Files.readString(file);
-    System.out.println("TODO: result goes here");
+    final var input = Files.lines(file);
+    System.out.println(new StepCounter(input).count(64));
   }
 }
