@@ -33,7 +33,8 @@ public class StepCounter {
   }
 
   public int count(final int max) {
-    int count = 0;
+    final int oddEven = max % 2;
+    int count = 1 - oddEven;
     int check = 1;
     final var queue = new ArrayDeque<Position>();
     queue.add(getStart());
@@ -47,15 +48,16 @@ public class StepCounter {
         if (hereI == max) break;
         if (hereI == check) {
           check++;
-          count = 0;
         }
         for (final Direction d : Direction.values()) {
           final var newPosition = p.move(d);
           final var newValue = get(newPosition);
-          if (newValue.isPresent() && !"#".equals(newValue.get()) && !queue.contains(newPosition)) {
+          if (newValue.isPresent() && ".".equals(newValue.get())) {
             queue.add(newPosition);
             set(newPosition, check);
-            count++;
+            if (check % 2 == oddEven) {
+              count++;
+            }
           }
         }
       }
