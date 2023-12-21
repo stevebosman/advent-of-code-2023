@@ -15,7 +15,7 @@ public class ButtonTest {
             &inv -> a""";
     final var instance = new Button(input.lines().toList());
 
-    assertEquals(32_000_000L, instance.repeat(1000));
+    assertEquals(32_000_000L, Controller.pushTheButton(instance, 1000));
   }
 
   @Test
@@ -28,6 +28,6 @@ public class ButtonTest {
             &con -> output""";
     final var instance = new Button(input.lines().toList());
 
-    assertEquals(11_687_500L, instance.repeat(1000));
+    assertEquals(11_687_500L, Controller.pushTheButton(instance, 1));
   }
 }

@@ -20,6 +20,7 @@ public class Part2 {
   private static void runIt(final Path file) throws IOException {
     final var input = Files.readAllLines(file);
     // use to determine repeats
-    System.out.println(new Button(input).repeat(10000));
+    final var button = new Button(input);
+    System.out.println(Controller.pushTheButton(button, 10000));
   }
 }

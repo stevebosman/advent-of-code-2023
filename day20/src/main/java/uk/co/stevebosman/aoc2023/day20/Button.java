@@ -55,14 +55,6 @@ public class Button extends Module {
     // do nothing
   }
 
-  public long repeat(final long count) {
-    for (long i = 0; i < count; i++) {
-      Module.index++;
-      broadcast(Pulse.Low);
-    }
-    return Module.counts.get(Pulse.Low) * Module.counts.get(Pulse.High);
-  }
-
   public String toString() {
     return "button";
   }
