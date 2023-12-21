@@ -21,6 +21,7 @@ public class Part2 {
     final var input = Files.readAllLines(file);
     // use to determine repeats
     final var button = new Button(input);
-    System.out.println(Controller.pushTheButton(button, 10000));
+    Controller.pushTheButton(button, 17000);
+    System.out.println(Controller.getLowPulseToRxTime());
   }
 }

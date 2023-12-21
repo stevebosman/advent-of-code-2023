@@ -19,7 +19,7 @@ public abstract class Module {
 
   public void broadcast(final Pulse pulse) {
     for (final Module module : outputs) {
-      Controller.messages.add(new Message(this, module, pulse));
+      Controller.addMessage(new Message(this, module, pulse));
     }
   }
 

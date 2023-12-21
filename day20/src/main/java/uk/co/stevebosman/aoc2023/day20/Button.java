@@ -31,17 +31,12 @@ public class Button extends Module {
         rawModules.put(name, raw[1].strip());
       }
     }
-    final Conjunction rx = new Conjunction("rx");
-    modules.put("rx", rx);
     // Route modules
     for(final Map.Entry<String, String> entry: rawModules.entrySet()) {
       final Module module = modules.get(entry.getKey());
       final String[] outputs = entry.getValue().split(", ");
       for (final String output: outputs) {
-        final Module outputModule = modules.get(output);
-        if (outputModule == null) {
-          throw new IllegalArgumentException("Cannot find '" + output + "'");
-        }
+        final Module outputModule = modules.getOrDefault(output, new Conjunction(output));
         module.registerOutput(outputModule);
         if (outputModule instanceof Conjunction) {
           ((Conjunction)outputModule).registerInput(module);
