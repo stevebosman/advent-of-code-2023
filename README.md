@@ -21,7 +21,7 @@
 * [Day19: Aplenty](day19/README.md)
 * [Day20: Pulse Propagation](day20/README.md)
 * [Day21: Step Counter](day21/README.md)
-* [Day22](day22/README.md)
+* [Day22: Sand Slabs](day22/README.md)
 * [Day23](day23/README.md)
 * [Day24](day24/README.md)
 * [Day25](day25/README.md)
